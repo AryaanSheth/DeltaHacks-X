@@ -50,7 +50,8 @@ def generate_skills(path):
     hard_skills_list = ['Python', 'Java', 'Machine Learning', 'Data Analysis', 
     'SQL', 'C++', 'JavaScript', 'HTML/CSS', 'C', 'Go', 'React', 'Vue', 'Angular', 'Haskell', 'Prolog', 'Heroku', 'AWS', 'Docker', 'Git', 'Scrum', 'Agile'
     'Jenkins', 'NLP', 'Excel', 'Word', 'Power Point', 'Microsoft Office', 'Linux', 'Github', 'Kubernetes', 'Elixir', 'Dart', 'Ruby', 'Rust', 'Kotlin', 
-    'Cobol', 'Assembly', 'C#', '.NET', 'Nim', 'Matlab', 'CAD', 'Solidworks', 'Autodesk', 'Database Management', 'Tailwind', 'firebase', 'supabase', 'terraform']
+    'Cobol', 'Assembly', 'C#', '.NET', 'Nim', 'Matlab', 'CAD', 'Solidworks', 'Autodesk', 'Database Management', 'Tailwind', 'firebase', 'supabase', 'terraform',
+    'Photoshop', 'Figma', 'Blockchain', 'Django', 'Cryptography', 'Lua']
     soft_skills_list = ['Communication', 'Teamwork', 'Problem Solving', 'Time Management', 'Adaptability', 'Leadership', 'Creativity', 'Conflict Resolution', 'Emotional Intelligence']
 
     resume_text = extract_text_from_pdf(pdf_path)
