@@ -2,7 +2,8 @@
 </script>
 
 <template>
-    <div class="w-full h-10 text-center border border-[#4C503F] bg-[#35382C]">
+    <div class="w-full h-10 text-left border border-[#4C503F] bg-[#35382C]">
+        <img src="/taiket.png">
         header
     </div>
 </template>
