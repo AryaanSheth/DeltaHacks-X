@@ -1,7 +1,6 @@
 import torch
 from sentence_transformers import SentenceTransformer
-
-# sentences = ["This is an example sentence", "Each sentence is converted"]
+from resumeParse import generate_skills
 
 sentences = [
     "The quick brown fox jumps over the lazy dog.",

@@ -44,18 +44,18 @@ def extract_skills(text, hard_skills, soft_skills):
 
     return extracted_hard_skills, extracted_soft_skills
 
-if __name__ == "__main__":
-    pdf_path = "nlp-api/resume.pdf"
+def generate_skills(path):
+    pdf_path = path# nlp-api/resume3.pdf
 
     hard_skills_list = ['Python', 'Java', 'Machine Learning', 'Data Analysis', 
     'SQL', 'C++', 'JavaScript', 'HTML/CSS', 'C', 'Go', 'React', 'Vue', 'Angular', 'Haskell', 'Prolog', 'Heroku', 'AWS', 'Docker', 'Git', 'Scrum', 'Agile'
     'Jenkins', 'NLP', 'Excel', 'Word', 'Power Point', 'Microsoft Office', 'Linux', 'Github', 'Kubernetes', 'Elixir', 'Dart', 'Ruby', 'Rust', 'Kotlin', 
-    'Cobol', 'Assembly', 'C#', '.NET', 'Nim', 'Matlab', 'CAD', 'Solidworks', 'Autodesk', 'Database Management', 'Tailwind', 'firebase', 'supabase', 'terraform',
-    'Photoshop', 'Figma', 'Blockchain', 'Django', 'Cryptography', 'Lua']
+    'Cobol', 'Assembly', 'C#', '.NET', 'Nim', 'Matlab', 'CAD', 'Solidworks', 'Autodesk', 'Database Management', 'Tailwind', 'firebase', 'supabase', 'terraform']
     soft_skills_list = ['Communication', 'Teamwork', 'Problem Solving', 'Time Management', 'Adaptability', 'Leadership', 'Creativity', 'Conflict Resolution', 'Emotional Intelligence']
 
     resume_text = extract_text_from_pdf(pdf_path)
     hard_skills, soft_skills = extract_skills(resume_text, hard_skills_list, soft_skills_list)
 
-    print("Hard Skills:", hard_skills)
-    print("Soft Skills:", soft_skills)
+    skills = hard_skills + soft_skills
+    return skills
+
