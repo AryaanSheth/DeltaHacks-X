@@ -44,7 +44,7 @@ def extract_skills(text, hard_skills, soft_skills):
 
     return extracted_hard_skills, extracted_soft_skills
 
-def generate_skills(path):
+def generate_skills(path, type):
     pdf_path = path# nlp-api/resume3.pdf
 
     hard_skills_list = ['Python', 'Java', 'Machine Learning', 'Data Analysis', 
@@ -53,10 +53,16 @@ def generate_skills(path):
     'Cobol', 'Assembly', 'C#', '.NET', 'Nim', 'Matlab', 'CAD', 'Solidworks', 'Autodesk', 'Database Management', 'Tailwind', 'firebase', 'supabase', 'terraform',
     'Photoshop', 'Figma', 'Blockchain', 'Django', 'Cryptography', 'Lua']
     soft_skills_list = ['Communication', 'Teamwork', 'Problem Solving', 'Time Management', 'Adaptability', 'Leadership', 'Creativity', 'Conflict Resolution', 'Emotional Intelligence']
+    
+    if type == 'pdf':
+        resume_text = extract_text_from_pdf(pdf_path)
+    elif type == "txt":
+        # if its a txt it means it will be a string input
+        resume_text = path
 
-    resume_text = extract_text_from_pdf(pdf_path)
     hard_skills, soft_skills = extract_skills(resume_text, hard_skills_list, soft_skills_list)
-
+    
     skills = hard_skills + soft_skills
+
     return skills
 

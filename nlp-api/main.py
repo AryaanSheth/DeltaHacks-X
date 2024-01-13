@@ -1,15 +1,16 @@
 from flask import Flask
 import json
+from nlp import cosine_sim
 
 app = Flask(__name__)
 
-@app.route('/hello/', methods=['GET', 'POST'])
+@app.route('/ping/', methods=['GET', 'POST'])
 def welcome():
-    return "Hello World!"
+    return "pong"
 
-@app.route('/hello/<name>/', methods=['GET', 'POST'])
-def hello(name):
-    return "Hello " + name + "!"
+@app.route('/sim/<ticket>/<pdf>', methods=['GET', 'POST'])
+def sim(ticket, pdf):
+    return json.dumps(cosine_sim(path, ticket))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
