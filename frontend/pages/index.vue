@@ -3,7 +3,7 @@ const isAdmin = true;
 </script>
 
 <template>
-    <div class="flex flex-col h-screen w-full bg-[#3D3F36] text-[#F1F1E9]">
+    <div class="flex flex-col h-screen w-full">
         <AppHeader />
         <div class="flex">
             <SideBar />
