@@ -22,7 +22,7 @@
             </select>
         </div>
         <hr>
-        <button class="accept-button bg-[#485B49] rounded-lg text-center py-3 px-10 mt-6 self-end">Accept Task</button>
+        <button class="add-button bg-[#485B49] rounded-lg text-center py-3 px-10 mt-6 self-end">Add Task</button>
     </div>
 </template>
 
