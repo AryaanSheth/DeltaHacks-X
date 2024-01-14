@@ -3,7 +3,8 @@
 
 <template>
     <div class="flex justify-between bg-[#778F77] my-2 px-3 py-1 rounded-md text-black">
-        <div class="flex-col">
+        <Icon name="ph:circle-fill" color="#fb4934" class="text-2x1"/>  <!-- This changes colour based on the status of task-->
+        <div class="flex-col ml-5">
             <h1 class="task-name font-bold text-2xl text-[#182017]">Task Name</h1>
             <h2 class="pl-5 text-[#182017]">Urgency: High</h2>
             <h2 class="pl-5 text-[#182017]">Compatibility: 50%</h2>
