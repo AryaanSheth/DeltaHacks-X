@@ -211,5 +211,73 @@ def promote_to_project_manager():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
+@app.route('/delete_task_from_project', methods=['POST'])
+def delete_task_from_project():
+    try:
+        data = request.json
+        task_name = data.get('task_name')
+        project_pid = data.get('project_pid')
+        
+        project_key = f'project:{project_pid}'
+        r.srem(f'{project_key}:tasks', task_name)
+        
+        return jsonify({'status': 'success', 'message': 'Task deleted from project successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/delete_user', methods=['POST'])
+def delete_user():
+    try:
+        data = request.json
+        user_email = data.get('user_email')
+        
+        user_key = f'user:{user_email}'
+        r.delete(user_key)
+        
+        return jsonify({'status': 'success', 'message': 'User deleted successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/delete_project', methods=['POST'])
+def delete_project():
+    try:
+        data = request.json
+        project_pid = data.get('project_pid')
+        
+        project_key = f'project:{project_pid}'
+        r.delete(project_key)
+        
+        return jsonify({'status': 'success', 'message': 'Project deleted successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/update_task_status', methods=['POST'])
+def update_task_status():
+    try:
+        data = request.json
+        task_name = data.get('task_name')
+        new_status = data.get('new_status')
+        
+        task_key = f'task:{task_name}'
+        r.hset(task_key, 'Status', new_status)
+        
+        return jsonify({'status': 'success', 'message': 'Task status updated successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/demote_user', methods=['POST'])
+def demote_user():
+    try:
+        data = request.json
+        user_email = data.get('user_email')
+        project_pid = data.get('project_pid')
+        
+        project_key = f'project:{project_pid}'
+        r.srem(f'{project_key}:pm_emails', user_email)
+        
+        return jsonify({'status': 'success', 'message': 'User demoted successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
 if __name__ == '__main__':    
     app.run(host='0.0.0.0', port=3000)
