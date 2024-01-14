@@ -11,7 +11,7 @@ const isOpen = ref(false)
         <TaskCard/>
         <TaskCard/>
         <div class="self-center" v-if="isAdmin">
-            <button class="border rounded-lg text-center py-3 px-20 mt-5 mb-2" @click="isOpen = true">Add Task</button>
+            <button class="add-task-button rounded-lg text-center py-3 px-20 mt-5 mb-2 bg-[#485B49] text-[#F1F1E9]" @click="isOpen = true">Add Task</button>
             <UModal v-model="isOpen">
                 <TaskDetailedView />
             </UModal>
