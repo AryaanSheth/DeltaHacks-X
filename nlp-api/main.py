@@ -2,6 +2,9 @@ import json
 from flask import Flask, request, jsonify
 import redis
 
+from nlp import cosine_sim
+from resumeParse import extract_skills
+
 app = Flask(__name__)
 creds = redis.UsernamePasswordCredentialProvider("default", "cHCswCCH3MZIn2xB4jxYuyWfLIu0jitD")
 r = redis.Redis(
@@ -52,7 +55,7 @@ def store_user(user_data):
 def store_project(project_data):
     pid = project_data['Pid']
     name = project_data['Name']
-    pm_emails = project_data['Pm’s']
+    pm_emails = project_data['pm']
     employee_emails = project_data['Employees']
     
     project_key = f'project:{pid}'
@@ -61,6 +64,8 @@ def store_project(project_data):
     r.hset(project_key, 'Name', name)
     r.sadd(f'{project_key}:pm_emails', *pm_emails)
     r.sadd(f'{project_key}:employee_emails', *employee_emails)
+
+    print(r.hgetall(project_key))
 
 # Example to store task data
 def store_task(task_data):
@@ -82,14 +87,9 @@ def store_task(task_data):
     r.hset(task_key, 'Date_made', date_made)
     r.hset(task_key, 'Status', status)
 
-# Add user to project
-@app.route('/add_user_to_project', methods=['POST'])
-def add_user_to_project():
+@app.route('/add_user_to_project/<user_email>/<project_pid>/', methods=['POST'])
+def add_user_to_project(user_email, project_pid):
     try:
-        data = request.json
-        user_email = data.get('user_email')
-        project_pid = data.get('project_pid')
-        
         project_key = f'project:{project_pid}'
         r.sadd(f'{project_key}:employee_emails', user_email)
         
@@ -98,13 +98,9 @@ def add_user_to_project():
         return jsonify({'status': 'error', 'message': str(e)})
 
 # Delete user from project
-@app.route('/delete_user_from_project', methods=['POST'])
-def delete_user_from_project():
+@app.route('/delete_user_from_project/<user_email>/<project_pid>/', methods=['POST'])
+def delete_user_from_project(user_email, project_pid):
     try:
-        data = request.json
-        user_email = data.get('user_email')
-        project_pid = data.get('project_pid')
-        
         project_key = f'project:{project_pid}'
         r.srem(f'{project_key}:employee_emails', user_email)
         
@@ -112,14 +108,11 @@ def delete_user_from_project():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
+
 # Add user to task
-@app.route('/add_user_to_task', methods=['POST'])
-def add_user_to_task():
+@app.route('/add_user_to_task/<user_email>/<task_name>/', methods=['POST'])
+def add_user_to_task(user_email, task_name):
     try:
-        data = request.json
-        user_email = data.get('user_email')
-        task_name = data.get('task_name')
-        
         task_key = f'task:{task_name}'
         r.hset(task_key, 'Assigned to', user_email)
         
@@ -128,13 +121,9 @@ def add_user_to_task():
         return jsonify({'status': 'error', 'message': str(e)})
 
 # Delete user from task
-@app.route('/delete_user_from_task', methods=['POST'])
-def delete_user_from_task():
+@app.route('/delete_user_from_task/<user_email>/<task_name>/', methods=['POST'])
+def delete_user_from_task(user_email, task_name):
     try:
-        data = request.json
-        user_email = data.get('user_email')
-        task_name = data.get('task_name')
-        
         task_key = f'task:{task_name}'
         r.hdel(task_key, 'Assigned to')
         
@@ -143,13 +132,9 @@ def delete_user_from_task():
         return jsonify({'status': 'error', 'message': str(e)})
 
 # Add task to project
-@app.route('/add_task_to_project', methods=['POST'])
-def add_task_to_project():
+@app.route('/add_task_to_project/<task_name>/<project_pid>/', methods=['POST'])
+def add_task_to_project(task_name, project_pid):
     try:
-        data = request.json
-        task_name = data.get('task_name')
-        project_pid = data.get('project_pid')
-        
         project_key = f'project:{project_pid}'
         r.sadd(f'{project_key}:tasks', task_name)
         
@@ -157,49 +142,58 @@ def add_task_to_project():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
-# Create project
-@app.route('/create_project', methods=['POST'])
-def create_project():
+# Update the /create_project route to use URL parameters with GET method
+@app.route('/create_project/<pid>/<name>/<pm_email>/<employee_email>/', methods=['GET'])
+def create_project(pid, name, pm_email, employee_email):
     try:
-        data = request.json
-        store_project(data)
-        
+        project_data = {
+            'Pid': pid,
+            'Name': name,
+            'pm': [pm_email],  # Replace 'Pm’s' with 'pm'
+            'Employees': [employee_email]
+        }
+        store_project(project_data)
+
         return jsonify({'status': 'success', 'message': 'Project created successfully'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
-# Create user
-@app.route('/create_user', methods=['POST'])
-def create_user():
+
+
+# Update the /create_user route to use URL parameters
+@app.route('/create_user/<email>/<bool_value>/<file_path>/', methods=['POST'])
+def create_user(email, bool_value, file_path):
     try:
-        data = request.json
-        store_user(data)
-        
+        user_data = {
+            'Email': email,
+            'Bool': bool_value,
+            'File': file_path
+        }
+        store_user(user_data)
+
         return jsonify({'status': 'success', 'message': 'User created successfully'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
-# Create task
-@app.route('/create_task', methods=['POST'])
-def create_task():
+# Update the /create_task route to use URL parameters
+@app.route('/create_task/<parent_proj>/<name>/<desc>/<urgency>/<assigned_to>/<date_made>/<status>/', methods=['POST'])
+def create_task(parent_proj, name, desc, urgency, assigned_to, date_made, status):
     try:
-        data = request.json
-        store_task(data)
-        
+        task_data = {
+            'Parent proj': parent_proj,
+            'Name': name,
+            'Desc': desc,
+            'Urgency': urgency,
+            'Assigned to': assigned_to,
+            'Date_made': date_made,
+            'Status': status
+        }
+        store_task(task_data)
+
         return jsonify({'status': 'success', 'message': 'Task created successfully'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
-# List tasks a user is working on
-@app.route('/user_tasks/<user_email>', methods=['GET'])
-def user_tasks(user_email):
-    tasks = []
-    for task_key in r.scan_iter('task:*'):
-        task_data = r.hgetall(task_key)
-        if task_data.get('Assigned to') == user_email:
-            tasks.append(task_data)
-
-    return jsonify(tasks)
 
 @app.route('/promote_to_project_manager', methods=['POST'])
 def promote_to_project_manager():
@@ -282,6 +276,61 @@ def demote_user():
         return jsonify({'status': 'success', 'message': 'User demoted successfully'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/invite/<pid>/<project_name>', methods=['GET', 'POST'])
+def invite_user(pid, project_name):
+    try:
+        project_key = f'project:{pid}'
+        project_data = r.hgetall(project_key)
+        # Use the project_name from the URL instead of the JSON payload
+        return jsonify({'status': 'success', 'message': f'Project {project_name} has been created'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/user_tasks/<user_email>/', methods=['GET'])
+def user_tasks(user_email):
+    tasks = []
+    for task_key in r.scan_iter('task:*'):
+        task_data = r.hgetall(task_key)
+        if task_data.get('Assigned to') == user_email:
+            tasks.append(task_data)
+
+    return jsonify(tasks)
+
+# Update the /get_projects route to remove the limit parameter
+@app.route('/get_projects/', methods=['GET'])
+def get_projects():
+    try:
+        projects = []
+        for project_key in r.scan_iter('project:*'):
+            if r.type(project_key) == b'hash':
+                project_data = r.hgetall(project_key)
+                projects.append(project_data)
+            elif r.type(project_key) == b'set':
+                # Handle set type keys (if necessary)
+
+                pass
+            else:
+                # Handle other types if needed
+                pass
+
+        return jsonify(projects)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+
+@app.route('/nlp/<desc>/<path>/', methods=['GET'])
+def nlp(desc, path):
+    try:
+        text = extract_text_from_pdf(path)
+        hard_skills, soft_skills = extract_skills(text, hard_skills_list, soft_skills_list)
+        # return an object that has the desc, path, and the similairity ranking
+        similairity = calculate_similarity(desc, text)
+        return jsonify({'status':'success', 'desc': desc, 'path': path,'similairity': similairity, 'hard_skills': hard_skills,'soft_skills': soft_skills})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+
 
 if __name__ == '__main__':    
     app.run(host='0.0.0.0', port=3000)

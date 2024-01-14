@@ -35,7 +35,7 @@ response = requests.post(f"{base_url}/add_task_to_project", json=task_project_da
 assert response.json() == {'status': 'success', 'message': 'Task added to project successfully'}
 
 # Test create_project endpoint
-project_data = {"Pid": "123", "Name": "Project1", "Pm’s": ["pm@example.com"], "Employees": ["user@example.com"]}
+project_data = {"Pid": "123", "Name": "Project1", "Pm's": ["pm@example.com"], "Employees": ["user@example.com"]}
 response = requests.post(f"{base_url}/create_project", json=project_data)
 assert response.json() == {'status': 'success', 'message': 'Project created successfully'}
 
