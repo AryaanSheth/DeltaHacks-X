@@ -6,7 +6,7 @@
         <div class="flex">
             <Icon name="ph:circle-fill" color="#fb4934" class="text-2x1 mt-2"/>  <!-- This changes colour based on the status of task-->
             <div class="flex-col ml-5">
-                <h1 class="cursor-pointer font-bold text-2xl text-[#182017]">Task Name</h1>
+                <h1 class="cursor-pointer font-bold text-2xl text-[#182017] task-name">Task Name</h1>
                 <h2 class="pl-5 text-[#182017]">Urgency: High</h2>
                 <h2 class="pl-5 text-[#182017]">Compatibility: 50%</h2>
             </div>
@@ -16,20 +16,24 @@
 </template>
 
 <style scoped>
+    .task-name {
+        position: relative;
+    }
+
     .task-name::after {
         content: '';
         position: absolute;
         width: 0;
         height: 2px;
         bottom: 0;
-        left: 50%;
+        left: 42%;
         background: #000;
         transition: all 0.5s;
         transform: translateX(-50%);
     }
 
     .task-name:hover::after {
-        width: 100%;
+        width: 84%;
     }
 
     .elipses:hover {

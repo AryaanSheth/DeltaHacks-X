@@ -19,7 +19,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
 </script>
 
 <template>
-    <div class="flex flex-col h-screen w-full">
+    <div class="flex flex-col h-screen w-full bg-image">
         <AppHeader />
 
         <UForm :validate="validate" :state="state" class="space-y-4 w-1/2 self-center bg-[#5B6E5B] rounded-xl px-10 py-10 mt-5" @submit="onSubmit">
@@ -66,5 +66,11 @@ async function onSubmit(event: FormSubmitEvent<any>) {
 <style scoped>
     .invite-button:hover {
         background-color: #3f4f40;
+    }
+
+    .bg-image {
+        background-image: url('~/assets/images/background.png');
+        background-repeat: right;
+        background-size: 50%;
     }
 </style>

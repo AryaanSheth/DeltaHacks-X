@@ -13,8 +13,12 @@
             officia deserunt mollit anim id est laborum.
         </div>
         <hr>
-        <button class="border rounded-lg text-center py-3 px-10 mt-6 self-end">Accept Task</button>
+        <button class="accept-button bg-[#485B49] rounded-lg text-center py-3 px-10 mt-6 self-end">Accept Task</button>
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+    .accept-button:hover {
+        background-color: #3f4f40;
+    }
+</style>
