@@ -30,7 +30,7 @@ def cosine_sim(path, ticket) -> float:
 # test = """
 # Ticket Title: Enhance User Profile Management Module
 
-# Description:
+# Descripti
 
 # Objective:
 # Improve the existing User Profile Management module to provide a more intuitive and personalized experience for our users.
