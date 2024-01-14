@@ -24,6 +24,10 @@ r = redis.Redis(
     credential_provider=creds
 )
 
+@app.route('/', methods=['GET', 'POST'])
+def root():
+    return "Welcome to the NLP API"
+
 @app.route('/ping/', methods=['GET', 'POST'])
 def welcome():
     return "pong"
