@@ -45,27 +45,11 @@ const isOpen = ref(false)
 </template>
 
 <style scoped>
-.task-name {
-    position: relative;
-}
-
-.task-name::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0;
-    left: 42%;
-    background: #000;
-    transition: all 0.5s;
-    transform: translateX(-50%);
-}
-
-.task-name:hover::after {
-    width: 84%;
-}
-
 .elipses:hover {
     cursor: pointer;
+}
+
+.task-name:hover {
+    text-decoration: underline;
 }
 </style>
