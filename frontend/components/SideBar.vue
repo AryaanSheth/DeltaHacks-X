@@ -2,7 +2,7 @@
 </script>
 
 <template>
-    <div class="w-1/4 border border-[#61554e] h-[90vh] bg-[#665b53]">
+    <div class="w-1/4 border border-[#61554e] h-[90vh] bg-[#665b53]" style="opacity: 80%;">
         <div class="button-container" style="display: flex; flex-direction: column;">
             <button class="opt-1">Option 1</button>
             <button class="opt-2">Option 2</button>
