@@ -23,7 +23,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
         <AppHeader />
 
         <UForm :validate="validate" :state="state" class="space-y-4 w-1/2 self-center bg-[#5B6E5B] rounded-xl px-10 py-10 mt-5" @submit="onSubmit">
-            <h1 class="text-center text-2xl">You are invited to join "Project Name"</h1>
+            <h1 class="text-center text-2xl text-[#F1F1E9]">You are invited to join "Project Name"</h1>
 
             <div class="mb-5">
                 <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
@@ -58,8 +58,13 @@ async function onSubmit(event: FormSubmitEvent<any>) {
             </div>
 
             <button
-                class="invite-button rounded-lg text-center py-3 px-10 border hover:bg-[#485B49] hover:border-none self-center"
+                class="invite-button rounded-lg text-center py-3 px-10 bg-[#485B49] text-[#F1F1E9] hover:border-none self-center"
                 type="submit">Submit</button>
         </UForm>
 </div></template>
 
+<style scoped>
+    .invite-button:hover {
+        background-color: #3f4f40;
+    }
+</style>
