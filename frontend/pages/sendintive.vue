@@ -14,7 +14,6 @@ const validate = (state: any): FormError[] => {
 }
 
 async function onSubmit(event: FormSubmitEvent<any>) {
-    navigateTo('/sendingdata')
     console.log(event.data)
 }
 </script>
@@ -60,7 +59,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
 
             <button
                 class="invite-button rounded-lg text-center py-3 px-10 bg-[#485B49] text-[#F1F1E9] hover:border-none self-center"
-                type="submit" @click="() => onSubmit">Submit</button>
+                type="submit">Submit</button>
         </UForm>
 </div></template>
 
