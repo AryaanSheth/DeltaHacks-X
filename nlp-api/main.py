@@ -11,6 +11,19 @@ r = redis.Redis(
     credential_provider=creds
 )
 
+import json
+from flask import Flask, request, jsonify
+import redis
+
+app = Flask(__name__)
+creds = redis.UsernamePasswordCredentialProvider("default", "cHCswCCH3MZIn2xB4jxYuyWfLIu0jitD")
+r = redis.Redis(
+    host='redis-13955.c325.us-east-1-4.ec2.cloud.redislabs.com',
+    port=13955,
+    decode_responses=True,
+    credential_provider=creds
+)
+
 @app.route('/ping/', methods=['GET', 'POST'])
 def welcome():
     return "pong"
@@ -65,51 +78,136 @@ def store_task(task_data):
     r.hset(task_key, 'Date_made', date_made)
     r.hset(task_key, 'Status', status)
 
-# Example route to get user data from Redis
-@app.route('/get_user/<email>', methods=['GET'])
-def get_user(email):
-    user_key = f'user:{email}'
-    user_data = r.hgetall(user_key)
-    
-    return jsonify(user_data)
+# Add user to project
+@app.route('/add_user_to_project', methods=['POST'])
+def add_user_to_project():
+    try:
+        data = request.json
+        user_email = data.get('user_email')
+        project_pid = data.get('project_pid')
+        
+        project_key = f'project:{project_pid}'
+        r.sadd(f'{project_key}:employee_emails', user_email)
+        
+        return jsonify({'status': 'success', 'message': 'User added to project successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
 
-# Example route to get project data from Redis
-@app.route('/get_project/<pid>', methods=['GET'])
-def get_project(pid):
-    project_key = f'project:{pid}'
-    project_data = {
-        'Pid': r.hget(project_key, 'Pid'),
-        'Name': r.hget(project_key, 'Name'),
-        'Pm’s': r.smembers(f'{project_key}:pm_emails'),
-        'Employees': r.smembers(f'{project_key}:employee_emails')
-    }
-    
-    return jsonify(project_data)
+# Delete user from project
+@app.route('/delete_user_from_project', methods=['POST'])
+def delete_user_from_project():
+    try:
+        data = request.json
+        user_email = data.get('user_email')
+        project_pid = data.get('project_pid')
+        
+        project_key = f'project:{project_pid}'
+        r.srem(f'{project_key}:employee_emails', user_email)
+        
+        return jsonify({'status': 'success', 'message': 'User deleted from project successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
 
-# Example route to get task data from Redis
-@app.route('/get_task/<name>', methods=['GET'])
-def get_task(name):
-    task_key = f'task:{name}'
-    task_data = r.hgetall(task_key)
-    
-    return jsonify(task_data)
+# Add user to task
+@app.route('/add_user_to_task', methods=['POST'])
+def add_user_to_task():
+    try:
+        data = request.json
+        user_email = data.get('user_email')
+        task_name = data.get('task_name')
+        
+        task_key = f'task:{task_name}'
+        r.hset(task_key, 'Assigned to', user_email)
+        
+        return jsonify({'status': 'success', 'message': 'User added to task successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
 
-@app.route('/get_tasks/', methods=['GET'])
-def get_tasks():
+# Delete user from task
+@app.route('/delete_user_from_task', methods=['POST'])
+def delete_user_from_task():
+    try:
+        data = request.json
+        user_email = data.get('user_email')
+        task_name = data.get('task_name')
+        
+        task_key = f'task:{task_name}'
+        r.hdel(task_key, 'Assigned to')
+        
+        return jsonify({'status': 'success', 'message': 'User deleted from task successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+# Add task to project
+@app.route('/add_task_to_project', methods=['POST'])
+def add_task_to_project():
+    try:
+        data = request.json
+        task_name = data.get('task_name')
+        project_pid = data.get('project_pid')
+        
+        project_key = f'project:{project_pid}'
+        r.sadd(f'{project_key}:tasks', task_name)
+        
+        return jsonify({'status': 'success', 'message': 'Task added to project successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+# Create project
+@app.route('/create_project', methods=['POST'])
+def create_project():
+    try:
+        data = request.json
+        store_project(data)
+        
+        return jsonify({'status': 'success', 'message': 'Project created successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+# Create user
+@app.route('/create_user', methods=['POST'])
+def create_user():
+    try:
+        data = request.json
+        store_user(data)
+        
+        return jsonify({'status': 'success', 'message': 'User created successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+# Create task
+@app.route('/create_task', methods=['POST'])
+def create_task():
+    try:
+        data = request.json
+        store_task(data)
+        
+        return jsonify({'status': 'success', 'message': 'Task created successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+# List tasks a user is working on
+@app.route('/user_tasks/<user_email>', methods=['GET'])
+def user_tasks(user_email):
     tasks = []
     for task_key in r.scan_iter('task:*'):
         task_data = r.hgetall(task_key)
-        tasks.append(task_data)
+        if task_data.get('Assigned to') == user_email:
+            tasks.append(task_data)
 
     return jsonify(tasks)
 
-# Endpoint to store a task
-@app.route('/store_task', methods=['POST'])
-def store_task_endpoint():
+@app.route('/promote_to_project_manager', methods=['POST'])
+def promote_to_project_manager():
     try:
-        task_data = request.json  # Assuming the data is sent in JSON format in the request body
-        store_task(task_data)
-        return jsonify({'status': 'success', 'message': 'Task stored successfully'})
+        data = request.json
+        user_email = data.get('user_email')
+        project_pid = data.get('project_pid')
+        
+        project_key = f'project:{project_pid}'
+        r.sadd(f'{project_key}:pm_emails', user_email)
+        
+        return jsonify({'status': 'success', 'message': 'User promoted to project manager successfully'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
