@@ -14,19 +14,6 @@ r = redis.Redis(
     credential_provider=creds
 )
 
-import json
-from flask import Flask, request, jsonify
-import redis
-
-app = Flask(__name__)
-creds = redis.UsernamePasswordCredentialProvider("default", "cHCswCCH3MZIn2xB4jxYuyWfLIu0jitD")
-r = redis.Redis(
-    host='redis-13955.c325.us-east-1-4.ec2.cloud.redislabs.com',
-    port=13955,
-    decode_responses=True,
-    credential_provider=creds
-)
-
 @app.route('/', methods=['GET', 'POST'])
 def root():
     return "Welcome to the NLP API"
