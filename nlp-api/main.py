@@ -6,7 +6,7 @@ from nlp import *
 from resumeParse import *
 
 app = Flask(__name__)
-creds = redis.UsernamePasswordCredentialProvider("default", "cHCswCCH3MZIn2xB4jxYuyWfLIu0jitD")
+creds = redis.UsernamePasswordCredentialProvider("", "")
 r = redis.Redis(
     host='redis-13955.c325.us-east-1-4.ec2.cloud.redislabs.com',
     port=13955,
